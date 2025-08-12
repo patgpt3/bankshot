@@ -2,99 +2,107 @@
 import styles from "./page.module.css";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Tier = { name: string; price: number; perks: string[] };
 
 export default function Page() {
   const { ready, authenticated, login, logout } = usePrivy();
-  const [raised] = useState(12500); // USD placeholder
-  const goal = 50000; // USD placeholder
-  const progress = Math.min(100, Math.round((raised / goal) * 100));
+
+  // Countdown to first demo (placeholder target)
+  const target = useMemo(() => new Date(Date.now() + 4*24*60*60*1000 + 15*60*60*1000), []);
+  const [now, setNow] = useState<Date>(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, target.getTime() - now.getTime());
+  const d = Math.floor(diff / (24*60*60*1000));
+  const h = Math.floor((diff % (24*60*60*1000)) / (60*60*1000));
+  const m = Math.floor((diff % (60*60*1000)) / (60*1000));
+  const s = Math.floor((diff % (60*1000)) / 1000);
+
+  // Funding/progress (placeholder)
+  const totalSupply = 1000;
+  const minted = 256;
+  const fundedPct = Math.round((minted / totalSupply) * 100);
 
   const tiers: Tier[] = [
-    { name: "Basic", price: 25, perks: ["Early access stream", "Community role"] },
-    { name: "Pro", price: 99, perks: ["720p download", "Behind-the-scenes", "Community role"] },
-    { name: "VIP", price: 249, perks: ["4K download", "Credits mention", "VIP chat"] },
+    { name: "Access Pass", price: 25, perks: ["Mint with Privy", "Unlock demo access", "Collectible & tradable"] },
   ];
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
-
-  const onBuyClick = (tier: Tier) => {
-    setSelectedTier(tier);
-    if (!authenticated) {
-      login();
-      return;
-    }
-    setModalOpen(true);
-  };
+  const onMint = () => { if (!authenticated) { login(); return; } setModalOpen(true); };
 
   return (
     <main className={styles.main}>
       <section className={styles.hero}>
         <div className={styles.heroText}>
-          <h1 className={styles.title}>MovieCook</h1>
-          <p className={styles.subtitle}>Stacked AI hardware to generate feature-length films in real time. Get your access pass to the first live demo on Bankshot.</p>
+          <h1 className={styles.bigTitle}>
+            Own the Future<br/>of AI Film Creation
+          </h1>
+          <p className={styles.subtitle}>
+            Mint your exclusive MovieCook Access Pass on Bankshot and witness the first-ever live AI-generated feature film.
+          </p>
           <div className={styles.ctaRow}>
-            <button className={styles.primaryCta} disabled={!ready} onClick={() => (authenticated ? logout() : login())}>
-              {authenticated ? "Connected" : "Connect with Privy"}
-            </button>
-            <button className={styles.btnRed}>Red</button>
-            <button className={styles.btnGreen}>Green</button>
-            <button className={styles.btnBlue}>Blue</button>
+            <button className={styles.primaryCta} disabled={!ready} onClick={onMint}>Mint Access Pass</button>
+            <a className={styles.secondaryCta} href="#" aria-label="Watch demo">Watch Demo</a>
           </div>
+          <p className={styles.note}>Only 1,000 passes available</p>
         </div>
         <div className={styles.heroMedia}>
-          <Image src="/moviecook.jpg" alt="MovieCook" width={960} height={540} className={styles.heroImage} />
+          <Image src="/moviecook.jpg" alt="MovieCook device" width={960} height={540} className={styles.heroImage} />
         </div>
       </section>
 
-      <section className={styles.productSection}>
-        <h2>Get your access pass</h2>
-        <p className={styles.muted}>Early supporters unlock exclusive access. On-chain purchase will be enabled when the program is live.</p>
-
-        <div className={styles.progress}>
-          <div className={styles.progressMeta}>
-            <span>${'{'}raised.toLocaleString(){'}'}</span>
-            <span>of ${'{'}goal.toLocaleString(){'}'} goal</span>
-            <span>{progress}% funded</span>
+      <section className={styles.howItWorks}>
+        <h2 className={styles.sectionTitle}>How It Works</h2>
+        <div className={styles.stepsGrid}>
+          <div className={styles.step}>
+            <span className={styles.icon}></span>
+            <h3>Mint with Privy</h3>
+            <p>Secure your pass on-chain with Privy.</p>
           </div>
-          <div className={styles.progressTrack}>
-            <div className={styles.progressFill} style={{ width: `${'{'}progress{'}'}%` }} />
+          <div className={styles.step}>
+            <span className={styles.icon}></span>
+            <h3>Unlock Demo Access</h3>
+            <p>Join the live premieres event of MovieCook.</p>
           </div>
-        </div>
-
-        <div className={styles.tiersGrid}>
-          {tiers.map((tier) => (
-            <div className={styles.card} key={tier.name}>
-              <div className={styles.cardHeader}>
-                <h3>{tier.name}</h3>
-                <div className={styles.cardPrice}>${'{'}tier.price{'}'}</div>
-              </div>
-              <ul className={styles.perks}>
-                {tier.perks.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-              <button className={styles.primaryCta} onClick={() => onBuyClick(tier)}>
-                Buy {tier.name}
-              </button>
-            </div>
-          ))}
+          <div className={styles.step}>
+            <span className={styles.icon}></span>
+            <h3>Own a Piece of the Future</h3>
+            <p>Collectible and tradable access pass.</p>
+          </div>
         </div>
       </section>
 
-      {modalOpen && selectedTier && (
+      <section className={styles.countdownSection}>
+        <div className={styles.countdown}>{String(d).padStart(2,'0')}d:{String(h).padStart(2,'0')}h:{String(m).padStart(2,'0')}m {String(s).padStart(2,'0')}s</div>
+        <div className={styles.countdownSub}>Until the First Demo</div>
+        <div className={styles.progressTrack}><div className={styles.progressFill} style={{ width: `${fundedPct}%` }}/></div>
+        <div className={styles.progressMeta}>{minted} of {totalSupply} passes minted  {fundedPct}% funded</div>
+      </section>
+
+      <section className={styles.features}>
+        <h2 className={styles.sectionTitle}>Explore the Device</h2>
+        <ul className={styles.bullets}>
+          <li>Stacked AI hardware</li>
+          <li>Real-time rendering</li>
+          <li>Modular GPU upgrades</li>
+        </ul>
+        <div className={styles.brands}>
+          <div className={styles.brand}>Powered by <strong>Privy</strong></div>
+          <div className={styles.brand}><strong>Bankshot</strong> Launchpad</div>
+        </div>
+      </section>
+
+      {modalOpen && (
         <div className={styles.modalOverlay} onClick={() => setModalOpen(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Checkout (placeholder)</h3>
-            <p>
-              Tier: <strong>{selectedTier.name}</strong>  ${'{'}selectedTier.price{'}'}
-            </p>
+            <h3 className={styles.modalTitle}>Mint Access Pass (placeholder)</h3>
+            <p>On-chain mint will be enabled after mainnet program deployment.</p>
             <div className={styles.modalActions}>
-              <button className={styles.primaryCta} onClick={() => setModalOpen(false)}>Proceed</button>
-              <button className={styles.btnSecondary} onClick={() => setModalOpen(false)}>Cancel</button>
+              <button className={styles.primaryCta} onClick={() => setModalOpen(false)}>Close</button>
             </div>
           </div>
         </div>
