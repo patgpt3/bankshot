@@ -1,0 +1,1 @@
+import { MongoClient, Db } from 'mongodb';\nlet db: Db | null = null;\nexport async function getDb() {\n  if (db) return db;\n  const uri = process.env.MONGODB_URI!;\n  const client = new MongoClient(uri);\n  await client.connect();\n  db = client.db(process.env.MONGODB_DB || 'bankshot');\n  return db;\n}\n
