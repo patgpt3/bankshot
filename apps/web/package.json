@@ -1,4 +1,4 @@
-{
+﻿{
     "name":  "web",
     "version":  "0.1.0",
     "private":  true,
@@ -24,7 +24,8 @@
                          "react":  "19.1.0",
                          "react-dom":  "19.1.0",
                          "zustand":  "^5.0.7",
-                         "bn.js":  "^5.2.1"
+                         "bn.js":  "^5.2.1",
+                         "@privy-io/react-auth":  "^1.75.0"
                      },
     "devDependencies":  {
                             "@eslint/eslintrc":  "^3",
