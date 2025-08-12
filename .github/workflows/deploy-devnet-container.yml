@@ -7,7 +7,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: projectserum/anchor:latest
+      image: ghcr.io/coral-xyz/anchor:latest
     steps:
       - uses: actions/checkout@v4
       - name: Print versions
@@ -40,3 +40,4 @@ jobs:
         with:
           name: program-id
           path: program_id.txt
+
