@@ -1,0 +1,50 @@
+name: deploy-devnet
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          solana --version
+          solana config set --url https://api.devnet.solana.com
+          solana-keygen new --no-bip39-passphrase -f -o $HOME/.config/solana/id.json
+          solana airdrop 2 || true
+      - name: Install Anchor CLI
+        run: |
+          sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev libudev-dev
+          cargo install --git https://github.com/coral-xyz/anchor anchor-cli --tag v0.30.1 --locked
+          anchor --version
+      - name: Generate program keypair and set PROGRAM_ID
+        run: |
+          mkdir -p programs/launchpad/target/deploy
+          solana-keygen new --no-bip39-passphrase -f -o programs/launchpad/target/deploy/launchpad-keypair.json
+          PROGRAM_ID=$(solana address -k programs/launchpad/target/deploy/launchpad-keypair.json)
+          echo "PROGRAM_ID=$PROGRAM_ID" | tee program_id.txt
+          sed -i "s/launchpad = \"[A-Za-z0-9]*\"/launchpad = \"$PROGRAM_ID\"/" Anchor.toml
+          sed -i "s/declare_id!(\"[A-Za-z0-9]*\"/declare_id!(\"$PROGRAM_ID\"/" programs/launchpad/src/lib.rs
+      - name: Build and Deploy
+        env:
+          ANCHOR_WALLET: ${{ env.HOME }}/.config/solana/id.json
+        run: |
+          anchor build
+          anchor deploy
+      - name: Upload program id
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-id
+          path: program_id.txt
