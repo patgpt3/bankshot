@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import styles from "./page.module.css";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useState } from "react";
@@ -14,9 +14,13 @@ export default function Page() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.center}>
-        <h1>Bankshot Launchpad</h1>
-      </div>
+      
+      <section style={{marginTop:24, padding:"16px 0"}}>
+        <h2 style={{fontSize:24, marginBottom:8}}>MovieCook</h2>
+        <p style={{opacity:0.8, maxWidth:640}}>
+          Stacked AI hardware to generate feature-length films in real time. This is the first live demo on Bankshot.
+        </p>
+      </section>
 
       <section>
         <h2>Access Pass Marketplace</h2>
@@ -53,3 +57,4 @@ export default function Page() {
     </main>
   );
 }
+
