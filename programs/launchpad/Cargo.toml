@@ -9,4 +9,4 @@ name = "launchpad"
 
 [dependencies]
 anchor-lang = "0.30.1"
-anchor-spl = { version = "0.30.1", features = ["metadata"] }
+anchor-spl = { version = "0.30.1", features = ["metadata", "associated-token"] }
