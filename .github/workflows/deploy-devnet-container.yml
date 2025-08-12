@@ -1,0 +1,42 @@
+name: deploy-devnet-container
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: projectserum/anchor:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print versions
+        run: |
+          anchor --version || true
+          solana --version || true
+          rustc -V || true
+      - name: Configure Solana devnet
+        run: |
+          solana config set --url https://api.devnet.solana.com
+          mkdir -p $HOME/.config/solana
+          solana-keygen new --no-bip39-passphrase -f -o $HOME/.config/solana/id.json
+          solana airdrop 2 || true
+      - name: Generate program keypair and set IDs
+        run: |
+          mkdir -p programs/launchpad/target/deploy
+          solana-keygen new --no-bip39-passphrase -f -o programs/launchpad/target/deploy/launchpad-keypair.json
+          PROGRAM_ID=$(solana address -k programs/launchpad/target/deploy/launchpad-keypair.json)
+          echo "PROGRAM_ID=$PROGRAM_ID" | tee program_id.txt
+          sed -i "s/launchpad = \"[A-Za-z0-9]*\"/launchpad = \"$PROGRAM_ID\"/" Anchor.toml
+          sed -i "s/declare_id!(\"[A-Za-z0-9]*\"/declare_id!(\"$PROGRAM_ID\"/" programs/launchpad/src/lib.rs
+      - name: Build and deploy
+        env:
+          ANCHOR_WALLET: ${{ env.HOME }}/.config/solana/id.json
+        run: |
+          anchor build
+          anchor deploy
+      - name: Upload program id
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-id
+          path: program_id.txt
