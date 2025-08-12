@@ -93,3 +93,4 @@ export default function Home() {
     </div>
   );
 }
+\n\n// Quick actions wired later using getProgram() from src/lib/anchorClient.ts\n
