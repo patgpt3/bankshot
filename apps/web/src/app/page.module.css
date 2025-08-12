@@ -16,15 +16,7 @@
   font-family: var(--font-geist-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-  }
 }
 
 .main {
@@ -160,10 +152,7 @@ a.secondary {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+
 }
 
 
@@ -228,3 +217,4 @@ a.secondary {
 .modalActions { display: flex; gap: 8px; margin-top: 16px; }
 
 @media (max-width: 900px) { .stepsGrid { grid-template-columns: 1fr; } .bigTitle { font-size: 40px; } }
+body,.page,.main{background:#fff!important;color:#0a0a0a;}\n
