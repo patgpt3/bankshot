@@ -1,7 +1,6 @@
 name: deploy-devnet
 
-on:
-  workflow_dispatch: {}
+on:\n  workflow_dispatch: {}\n  push:\n    branches: [ main ]
 
 jobs:
   deploy:
@@ -40,4 +39,5 @@ jobs:
         with:
           name: program-id
           path: program_id.txt
+
 
