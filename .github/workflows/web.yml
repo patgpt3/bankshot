@@ -1,0 +1,40 @@
+name: web-build-zip
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        run: npm i -g pnpm@9
+      - name: Install deps
+        working-directory: apps/web
+        run: pnpm i --frozen-lockfile
+      - name: Build
+        working-directory: apps/web
+        env:
+          NEXT_PUBLIC_CLUSTER: devnet
+          NEXT_PUBLIC_PROGRAM_ID: 11111111111111111111111111111111
+          NEXT_PUBLIC_RPC: https://api.devnet.solana.com
+          NEXT_PUBLIC_USDC_MINT: So11111111111111111111111111111111111111112
+          NEXT_PUBLIC_TREASURY: 11111111111111111111111111111111
+        run: pnpm build
+      - name: Archive production build
+        working-directory: apps/web
+        run: |
+          cd .next && zip -r ../web-build.zip ./*
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: apps/web/web-build.zip
