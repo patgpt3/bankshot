@@ -1,19 +1,20 @@
-import { AnchorProvider, Idl, Program, web3, BN } from "@coral-xyz/anchor";
+import { AnchorProvider, Program, Idl, web3 } from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
-import idl from "../../../programs/launchpad/target/idl/launchpad.json" assert { type: "json" };
 
-export function getProgram(wallet: any) {
+export async function getProgram(wallet: any) {
   const connection = new Connection(process.env.NEXT_PUBLIC_RPC!, "confirmed");
   const provider = new AnchorProvider(connection as any, wallet, { commitment: "confirmed" } as any);
-  // @ts-ignore
-  return new Program(idl as Idl, new PublicKey(process.env.NEXT_PUBLIC_PROGRAM_ID!), provider);
+  const programId = new PublicKey(process.env.NEXT_PUBLIC_PROGRAM_ID!);
+  const idl = (await Program.fetchIdl(programId, provider)) as Idl;
+  return new Program(idl, programId, provider);
 }
 
-export function pdas(program: Program, nftMint: PublicKey, seller: PublicKey) {
-  const listing = web3.PublicKey.findProgramAddressSync([
-    Buffer.from("listing"),
-    nftMint.toBuffer(),
-    seller.toBuffer(),
-  ], program.programId)[0];
-  return { listing };
-}
+export const pdas = {
+  listing(programId: PublicKey, nftMint: PublicKey, seller: PublicKey) {
+    return web3.PublicKey.findProgramAddressSync([
+      Buffer.from("listing"),
+      nftMint.toBuffer(),
+      seller.toBuffer(),
+    ], programId)[0];
+  },
+};
