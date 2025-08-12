@@ -1,4 +1,4 @@
-﻿import { AnchorProvider, Program, Idl, web3 } from "@coral-xyz/anchor";
+import { AnchorProvider, Program, Idl, web3 } from "@project-serum/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 
 export async function getProgram(wallet: any) {
