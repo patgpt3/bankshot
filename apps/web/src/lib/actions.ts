@@ -1,6 +1,6 @@
 "use client";
 import { AnchorProvider, Program, Idl, web3 } from "@project-serum/anchor";
-import { Connection, PublicKey, SystemProgram, clusterApiUrl } from "@solana/web3.js";
+import { Connection, PublicKey, SystemProgram, clusterApiUrl, type Cluster } from "@solana/web3.js";
 import BN from "bn.js";
 import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
@@ -24,7 +24,8 @@ export const pdas = {
   },
 };
 
-export const CLUSTER = process.env.NEXT_PUBLIC_CLUSTER ?? "devnet";
+const clusterEnv = (process.env.NEXT_PUBLIC_CLUSTER as Cluster | undefined);
+export const CLUSTER: Cluster = clusterEnv ?? "devnet";
 export const CONNECTION = new Connection(process.env.NEXT_PUBLIC_RPC ?? clusterApiUrl(CLUSTER), "confirmed");
 export const PROGRAM_ID = new PublicKey((process.env.NEXT_PUBLIC_PROGRAM_ID ?? "11111111111111111111111111111111"));
 export const USDC_MINT = new PublicKey((process.env.NEXT_PUBLIC_USDC_MINT ?? "So11111111111111111111111111111111111111112"));
