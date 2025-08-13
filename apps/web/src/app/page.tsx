@@ -3,6 +3,8 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useMemo, useState } from "react";
+import { PublicKey } from "@solana/web3.js";
+import { buyPass } from "../lib/actions";
 
 type Tier = { name: string; price: number; perks: string[] };
 
@@ -32,7 +34,10 @@ export default function Page() {
   ];
 
   const [modalOpen, setModalOpen] = useState(false);
-  const onMint = () => { if (!authenticated) { login(); return; } setModalOpen(true); };
+  const onMint = async () => {
+    if (!authenticated) { login(); return; }
+    setModalOpen(true);
+  };
 
   return (
     <main className={styles.main}>

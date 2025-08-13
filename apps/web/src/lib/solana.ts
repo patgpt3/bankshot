@@ -12,7 +12,7 @@ export const PROGRAM_ID = new PublicKey(
 );
 
 export const USDC_MINT = new PublicKey(
-  process.env.NEXT_PUBLIC_USDC_MINT || "So11111111111111111111111111111111111111112"
+  process.env.NEXT_PUBLIC_USDC_MINT || "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 );
 
 export const TREASURY = new PublicKey(
