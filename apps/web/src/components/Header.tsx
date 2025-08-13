@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { type ReactElement } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 
-export default function Header(): JSX.Element | null {
+export default function Header(): ReactElement | null {
   const { ready, authenticated, login, logout } = usePrivy();
   if (!ready) return null;
 
