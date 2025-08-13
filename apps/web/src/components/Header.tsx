@@ -11,8 +11,8 @@ export default function Header(): ReactElement | null {
       <button
         onClick={authenticated ? logout : login}
         style={{
-          background: "#005193",
-          color: "#f0e9e3",
+          background: "#22c55e",
+          color: "#0a0a0a",
           border: "none",
           borderRadius: 10,
           padding: "10px 14px",

@@ -45,7 +45,7 @@ export default function Page() {
             Mint your exclusive MovieCook Access Pass on Bankshot and witness the first-ever live AI-generated feature film.
           </p>
           <div className={styles.ctaRow}>
-            <button className={styles.primaryCta} disabled={!ready} onClick={onMint}>Mint Access Pass</button>
+            <button className={styles.primaryCta} disabled={!ready} onClick={onMint}>Get Access Pass</button>
             <a className={styles.secondaryCta} href="#" aria-label="Watch demo">Watch Demo</a>
           </div>
           <p className={styles.note}>Only 1,000 passes available</p>
