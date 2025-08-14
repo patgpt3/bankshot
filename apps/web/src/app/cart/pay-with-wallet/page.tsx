@@ -5,7 +5,7 @@ import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } f
 import { ethers } from "ethers";
 
 export default function PayWithWalletPage() {
-  const [amount, setAmount] = useState(0.1);
+  const [amount, setAmount] = useState(0.01);
   const [status, setStatus] = useState<string | null>(null);
   const { publicKey, signTransaction } = useWallet();
   const endpoint = process.env.NEXT_PUBLIC_RPC || "https://api.devnet.solana.com";
