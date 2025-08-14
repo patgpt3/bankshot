@@ -1,0 +1,93 @@
+// Prisma schema for ecommerce scaffolding
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  description String?
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  variants    Variant[]
+  images      ProductImage[]
+  collections ProductCollection[]
+}
+
+model Variant {
+  id         String   @id @default(cuid())
+  sku        String   @unique
+  title      String
+  priceCents Int
+  currency   String   @default("USD")
+  inventory  Int      @default(0)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  position  Int     @default(0)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Collection {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  items ProductCollection[]
+}
+
+model ProductCollection {
+  productId   String
+  collectionId String
+  product     Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection  Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  @@id([productId, collectionId])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  email     String?
+  completed Boolean    @default(false)
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int     @default(1)
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@unique([cartId, variantId])
+}
+
+model Order {
+  id           String     @id @default(cuid())
+  cartId       String     @unique
+  email        String
+  amountCents  Int
+  currency     String     @default("USD")
+  stripeId     String     @unique
+  status       String
+  paymentRail  String     @default("stripe")
+  txId         String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+

@@ -1,0 +1,5 @@
+[33m6e3a21e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m chore(ci): trigger deploy (no-op)
+[33m872d2bf[m fix(web): rewrite page.module.css cleanly and enforce white background
+[33ma393c23[m style(web): force all-white background and light color scheme (match mock)
+[33mca854b8[m feat(web): implement landing per spec (hero, how it works, countdown, progress, features, brands)
+[33m88c3bd8[m fix(web): add missing AppProviders to wrap Privy + Wallet providers

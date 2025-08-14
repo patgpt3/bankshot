@@ -1,4 +1,21 @@
 "use client";
+import Link from "next/link";
+
+export default function Header() {
+  return (
+    <header style={{ position: "sticky", top: 0, zIndex: 20, background: "#F4EFE9", backdropFilter: "saturate(180%) blur(8px)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", maxWidth: 1200, margin: "0 auto" }}>
+        <Link href="/" style={{ fontWeight: 700, letterSpacing: "-0.01em", color: "#0a0a0a", textDecoration: "none" }}>Bankshot</Link>
+        <div style={{ display: "flex", gap: 12 }}>
+          <Link href="/products" style={{ textDecoration: "none", color: "#0a0a0a" }}>Products</Link>
+          <Link href="/cart" style={{ textDecoration: "none", color: "#0a0a0a" }}>Cart</Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+"use client";
 import React, { type ReactElement } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 
