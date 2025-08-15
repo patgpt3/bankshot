@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
@@ -35,6 +38,7 @@ export default async function ProductDetail({ params }: { params: { slug: string
     </main>
   );
 }
+
 
 
 

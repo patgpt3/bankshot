@@ -1,1 +1,1 @@
-{"name":"bankshot","private":true,"packageManager":"pnpm@9.12.2","engines":{"node":"20.x"}}
+{"name":"bankshot","private":true,"packageManager":"pnpm@9.12.2","engines":{"node":"20.x"},"dependencies":{"bs58":"^6.0.0","tweetnacl":"^1.0.3"}}

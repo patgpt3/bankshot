@@ -7,3 +7,4 @@ dist/
 apps/web/.next/
 
 *.bak
+deployer-keypair.json
