@@ -94,3 +94,31 @@ model Order {
 }
 
 
+// ---- Creator Projects ----
+
+model Project {
+  id           String   @id @default(cuid()) @map("_id")
+  slug         String   @unique
+  title        String
+  subtitle     String?
+  description  String?
+  priceCents   Int?
+  currency     String?  @default("USD")
+  supplyCap    Int?
+  treasury     String?
+  theme        Json?
+  template     String   @default("default")
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  images       ProjectImage[]
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid()) @map("_id")
+  url       String
+  alt       String?
+  position  Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+}
