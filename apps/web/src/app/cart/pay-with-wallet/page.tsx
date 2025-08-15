@@ -1,4 +1,9 @@
 "use client";
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 import { useCallback, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
@@ -70,5 +75,7 @@ export default function PayWithWalletPage() {
     </main>
   );
 }
+
+
 
 
