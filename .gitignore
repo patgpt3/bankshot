@@ -6,3 +6,4 @@ dist/
 .env*
 apps/web/.next/
 
+*.bak

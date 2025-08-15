@@ -50,11 +50,13 @@ model Collection {
 }
 
 model ProductCollection {
-  productId   String
+  id           String @id @default(cuid()) @map("_id")
+  productId    String
   collectionId String
-  product     Product    @relation(fields: [productId], references: [id])
-  collection  Collection @relation(fields: [collectionId], references: [id])
-  @@id([productId, collectionId])
+  product      Product    @relation(fields: [productId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id])
+
+  @@unique([productId, collectionId])
 }
 
 model Cart {
@@ -90,4 +92,5 @@ model Order {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
+
 
