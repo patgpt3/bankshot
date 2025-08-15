@@ -1,0 +1,61 @@
+name: Estimate Anchor Program Cost
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  estimate:
+    runs-on: ubuntu-latest
+    env:
+      RPC_URL: ${{ secrets.RPC_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Solana CLI
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          solana --version
+
+      - name: Install Anchor CLI (via avm)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked
+          avm install 0.29.0
+          avm use 0.29.0
+          anchor --version
+
+      - name: Build program
+        shell: bash
+        run: |
+          set -euxo pipefail
+          anchor build
+
+      - name: Compute binary size and rent
+        shell: bash
+        run: |
+          set -euxo pipefail
+          so_path=$(ls -1 target/deploy/*.so | head -n1)
+          echo "PROGRAM_SO=$so_path"
+          size_bytes=$(stat -c%s "$so_path")
+          echo "PROGRAM_SIZE_BYTES=$size_bytes"
+          solana rent "$size_bytes" --output json > rent.json
+          cat rent.json
+          lamports=$(jq -r '.rentExemptMinimumLamports' rent.json)
+          sols=$(python3 - <<PY
+lamports = int("$lamports")
+print(lamports / 1_000_000_000)
+PY
+          )
+          echo "RENT_EXEMPT_LAMPORTS=$lamports"
+          echo "RENT_EXEMPT_SOL=$sols"
