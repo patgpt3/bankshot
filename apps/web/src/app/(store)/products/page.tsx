@@ -1,3 +1,8 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 
@@ -32,6 +37,8 @@ export default async function ProductsPage() {
     </main>
   );
 }
+
+
 
 
 
