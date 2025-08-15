@@ -3,35 +3,45 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import prisma from "@/lib/prisma";
+import ProjectPageView from "@/components/ProjectPage";\nimport PromoInput from "@/components/PromoInput";
+import ReferralTracker from "@/components/ReferralTracker";
 import { notFound } from "next/navigation";
 
 export default async function ProjectPage({ params }: { params: { slug: string } }) {
-  const project = await prisma.project.findUnique({ where: { slug: params.slug }, include: { images: { orderBy: { position: "asc" } } } });
+  const project = await prisma.project.findUnique({ where: { slug: params.slug }, include: { images: { orderBy: { position: "asc" } }, tiers: { orderBy: { priceCents: "asc" } } } });
   if (!project) return notFound();
-  const hero = project.images[0]?.url ?? "";
   return (
     <main style={{ padding: 24 }}>
-      <section style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 32, alignItems: "center" }}>
-        <div>
-          <h1 style={{ fontSize: 44, lineHeight: 1.1, marginBottom: 8 }}>{project.title}</h1>
-          {project.subtitle && <p style={{ opacity: 0.8, fontSize: 18 }}>{project.subtitle}</p>}
-          {project.description && <p style={{ marginTop: 12 }}>{project.description}</p>}
-          <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-            <a href="/cart/pay-with-wallet" style={{ display: "inline-block", background: "#111827", color: "#fff", padding: "12px 16px", borderRadius: 10, textDecoration: "none" }}>
-              {project.priceCents != null ? `Preorder  $${(project.priceCents/100).toFixed(2)}` : "Preorder"}
-            </a>
-          
-          <form action="/api/subscribe" method="post" style={{ marginTop: 16, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, maxWidth: 440 }}>
-            <input type="hidden" name="projectId" value={project.id} />
-            <input name="email" placeholder="you@example.com" style={{ padding: 10, border: '1px solid rgba(0,0,0,0.15)', borderRadius: 8 }} />
-            <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: '#111827', color: '#fff' }}>Join waitlist</button>
-          </form>        </div>\n        <div>
-          {hero && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={hero} alt={project.title} style={{ display: "block", width: "100%", height: "auto", borderRadius: 12 }} />
-          )}
+      <ReferralTracker projectId={project.id} />
+      <ProjectPageView project={project as any} />
+      {project.goalCents && (
+        <div style={{ marginTop: 24 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>Funding progress</div>
+          <div style={{ height: 10, background: "#e5e7eb", borderRadius: 6, overflow: "hidden" }}>
+            <div style={{ width: `${Math.min(100, Math.round((project.pledgedCents / project.goalCents) * 100))}%`, height: 10, background: "#22c55e" }} />
+          </div>
+          <div style={{ marginTop: 6, opacity: 0.8 }}>
+            ${'${'}(project.pledgedCents/100).toFixed(2){'}'} raised  {project.backersCount} backers  goal ${'${'}(project.goalCents/100).toFixed(2){'}'}
+          </div>
         </div>
-      </section>
+      )}
+      {project.tiers.length > 0 && (
+        <section style={{ marginTop: 28, display: "grid", gap: 12 }}>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>Reward tiers</h2>
+          {project.tiers.map(t => (
+            <div key={t.id} style={{ border: "1px solid rgba(0,0,0,0.1)", borderRadius: 12, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontWeight: 600 }}>{t.name}</div>
+                {t.description && <div style={{ opacity: 0.8 }}>{t.description}</div>}
+                <div style={{ opacity: 0.8, marginTop: 4 }}>{t.shipEta ? `Est. ship ${'${'}t.shipEta{'}'}` : ""}</div>
+              </div>
+              <a href={`/cart/pay-with-wallet?tierId=${'${'}t.id{'}'}`} style={{ display: "inline-block", background: "#111827", color: "#fff", padding: "10px 14px", borderRadius: 10, textDecoration: "none" }}>
+                ${'${'}(t.priceCents/100).toFixed(2){'}'}
+              </a>
+            </div>
+          ))}
+        </section>
+      )}
     </main>
   );
 }
