@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -41,5 +41,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ received: true });
 }
+
 
 

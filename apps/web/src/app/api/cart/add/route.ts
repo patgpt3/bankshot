@@ -1,4 +1,4 @@
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
@@ -23,5 +23,6 @@ export async function POST(req: Request) {
 
   return NextResponse.redirect(new URL("/cart", req.url));
 }
+
 
 

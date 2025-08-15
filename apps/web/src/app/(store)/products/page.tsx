@@ -1,4 +1,4 @@
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 
 export default async function ProductsPage() {
@@ -32,5 +32,6 @@ export default async function ProductsPage() {
     </main>
   );
 }
+
 
 

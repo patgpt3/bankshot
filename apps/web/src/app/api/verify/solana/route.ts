@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Connection, PublicKey } from "@solana/web3.js";
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -56,5 +56,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ verified: true, createdOrder: Boolean(cartId) });
 }
+
 
 

@@ -1,4 +1,4 @@
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 
 export default async function CartPage() {
@@ -43,5 +43,6 @@ export default async function CartPage() {
     </main>
   );
 }
+
 
 
