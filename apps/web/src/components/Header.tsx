@@ -14,8 +14,6 @@ export default function Header() {
     </header>
   );
 }
-
-"use client";
 import React, { type ReactElement } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 
@@ -41,5 +39,6 @@ export default function Header(): ReactElement | null {
     </div>
   );
 }
+
 
 
