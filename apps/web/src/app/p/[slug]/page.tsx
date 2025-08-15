@@ -20,9 +20,12 @@ export default async function ProjectPage({ params }: { params: { slug: string }
             <a href="/cart/pay-with-wallet" style={{ display: "inline-block", background: "#111827", color: "#fff", padding: "12px 16px", borderRadius: 10, textDecoration: "none" }}>
               {project.priceCents != null ? `Preorder  $${(project.priceCents/100).toFixed(2)}` : "Preorder"}
             </a>
-          </div>
-        </div>
-        <div>
+          
+          <form action="/api/subscribe" method="post" style={{ marginTop: 16, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, maxWidth: 440 }}>
+            <input type="hidden" name="projectId" value={project.id} />
+            <input name="email" placeholder="you@example.com" style={{ padding: 10, border: '1px solid rgba(0,0,0,0.15)', borderRadius: 8 }} />
+            <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: '#111827', color: '#fff' }}>Join waitlist</button>
+          </form>        </div>\n        <div>
           {hero && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={hero} alt={project.title} style={{ display: "block", width: "100%", height: "auto", borderRadius: 12 }} />
@@ -32,3 +35,4 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     </main>
   );
 }
+
