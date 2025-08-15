@@ -1,0 +1,65 @@
+name: Deploy Anchor Program (mainnet)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RPC_URL: ${{ secrets.RPC_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Solana CLI
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          solana --version
+
+      - name: Install Anchor CLI (via avm)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked
+          avm install 0.29.0
+          avm use 0.29.0
+          anchor --version
+
+      - name: Restore keypairs from secrets
+        shell: bash
+        env:
+          PROGRAM_KEYPAIR_B64: ${{ secrets.PROGRAM_KEYPAIR_B64 }}
+          SOLANA_WALLET_KEYPAIR_B64: ${{ secrets.SOLANA_WALLET_KEYPAIR_B64 }}
+        run: |
+          set -euxo pipefail
+          mkdir -p "$HOME/.config/solana" target/deploy
+          echo "$SOLANA_WALLET_KEYPAIR_B64" | base64 -d > "$HOME/.config/solana/id.json"
+          echo "$PROGRAM_KEYPAIR_B64" | base64 -d > target/deploy/launchpad-keypair.json
+          chmod 600 "$HOME/.config/solana/id.json"
+
+      - name: Configure Solana
+        shell: bash
+        run: |
+          set -euxo pipefail
+          solana config set --url "${RPC_URL:-https://api.mainnet-beta.solana.com}"
+          solana address
+
+      - name: Build and deploy
+        shell: bash
+        env:
+          ANCHOR_WALLET: ${{ env.HOME }}/.config/solana/id.json
+          ANCHOR_PROVIDER_URL: ${{ env.RPC_URL }}
+        run: |
+          set -euxo pipefail
+          anchor build
+          anchor deploy --program-name launchpad
