@@ -2,15 +2,16 @@
 seeds = true
 skip-lint = false
 
-[programs.devnet]
-launchpad = "11111111111111111111111111111111"
+[programs.mainnet]
+launchpad = "CdvaU5g7hV3B7amC149moLDfGrMsXmJwqRm3uVCoMdZ"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "mainnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "node tests/launchpad.js"
+

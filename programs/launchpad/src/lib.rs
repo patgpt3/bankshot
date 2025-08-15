@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Mint};
 
 // Temporary placeholder; CI will replace on deploy
-declare_id!("11111111111111111111111111111111");
+declare_id!("CdvaU5g7hV3B7amC149moLDfGrMsXmJwqRm3uVCoMdZ");
 
 #[program]
 pub mod launchpad {
@@ -285,3 +285,4 @@ pub enum LaunchpadError {
     #[msg("Invalid basis points") ] InvalidBps,
     #[msg("Name too long")] NameTooLong,
 }
+
