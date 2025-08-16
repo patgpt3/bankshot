@@ -3,7 +3,6 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import prisma from "@/lib/prisma";
-import ProjectPageView from "@/components/ProjectPage";
 import PromoInput from "@/components/PromoInput";
 import ReferralTracker from "@/components/ReferralTracker";
 import { notFound } from "next/navigation";
@@ -14,7 +13,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   return (
     <main style={{ padding: 24 }}>
       <ReferralTracker projectId={project.id} />
-      <ProjectPageView project={project as any} />
+      <div style={{ display: "grid", gap: 16 }}>{project.images?.[0]?.url && (<img src={project.images[0].url} alt={project.title ?? "Project hero"} style={{ width: "100%", height: "auto", borderRadius: 12, objectFit: "cover" }} />)}{project.title && (<h1 style={{ fontSize: 28, fontWeight: 700 }}>{project.title}</h1>)}{project.subtitle && (<p style={{ fontSize: 18, opacity: 0.85 }}>{project.subtitle}</p>)}{project.description && (<div style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{project.description}</div>)}</div>
       {project.goalCents && (
         <div style={{ marginTop: 24 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>Funding progress</div>
@@ -46,6 +45,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     </main>
   );
 }
+
 
 
 
