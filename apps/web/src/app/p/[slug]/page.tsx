@@ -3,7 +3,8 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import prisma from "@/lib/prisma";
-import ProjectPageView from "@/components/ProjectPage";\nimport PromoInput from "@/components/PromoInput";
+import ProjectPageView from "@/components/ProjectPage";
+import PromoInput from "@/components/PromoInput";
 import ReferralTracker from "@/components/ReferralTracker";
 import { notFound } from "next/navigation";
 
@@ -45,5 +46,6 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     </main>
   );
 }
+
 
 
