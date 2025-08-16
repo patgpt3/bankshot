@@ -91,6 +91,9 @@ model Order {
   txId         String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  projectId   String?
+  tierId      String?
+  referralCode String?
 }
 
 
@@ -112,6 +115,16 @@ model Project {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   images       ProjectImage[]
+  subscribers ProjectSubscriber[]
+  tiers       Tier[]
+  stretchGoals StretchGoal[]
+  promoCodes  PromoCode[]
+  updates     ProjectUpdate[]
+  referrals   Referral[]
+  goalCents   Int?
+  pledgedCents Int   @default(0)
+  backersCount Int   @default(0)
+  subscribers ProjectSubscriber[]
 }
 
 model ProjectImage {
@@ -122,3 +135,71 @@ model ProjectImage {
   projectId String
   project   Project @relation(fields: [projectId], references: [id])
 }
+
+model ProjectSubscriber {
+  id        String  @id @default(cuid()) @map("_id")
+  projectId String
+  email     String
+  createdAt DateTime @default(now())
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId, email])
+}
+
+
+model Tier {
+  id         String   @id @default(cuid()) @map("_id")
+  projectId  String
+  name       String
+  description String?
+  priceCents Int
+  maxQty     Int?
+  soldQty    Int      @default(0)
+  shipEta    String?
+  project    Project  @relation(fields: [projectId], references: [id])
+}
+
+model StretchGoal {
+  id         String   @id @default(cuid()) @map("_id")
+  projectId  String
+  amountCents Int
+  title      String
+  unlocked   Boolean  @default(false)
+  project    Project  @relation(fields: [projectId], references: [id])
+}
+
+model PromoCode {
+  id         String   @id @default(cuid()) @map("_id")
+  projectId  String
+  code       String
+  percentOff Int?
+  amountOff  Int?
+  maxUses    Int?
+  used       Int      @default(0)
+  active     Boolean  @default(true)
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId, code])
+}
+
+model ProjectUpdate {
+  id         String   @id @default(cuid()) @map("_id")
+  projectId  String
+  title      String
+  body       String
+  publishedAt DateTime @default(now())
+  project    Project  @relation(fields: [projectId], references: [id])
+}
+
+model Referral {
+  id         String   @id @default(cuid()) @map("_id")
+  projectId  String
+  code       String
+  clicks     Int      @default(0)
+  orders     Int      @default(0)
+  amountCents Int     @default(0)
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId, code])
+}
+
