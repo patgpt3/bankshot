@@ -124,7 +124,6 @@ model Project {
   goalCents   Int?
   pledgedCents Int   @default(0)
   backersCount Int   @default(0)
-  subscribers ProjectSubscriber[]
 }
 
 model ProjectImage {
@@ -202,4 +201,7 @@ model Referral {
 
   @@unique([projectId, code])
 }
+
+
+
 
