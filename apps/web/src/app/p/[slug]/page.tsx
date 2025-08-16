@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+﻿export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const revalidate = 0;
 
@@ -45,4 +45,5 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     </main>
   );
 }
+
 
